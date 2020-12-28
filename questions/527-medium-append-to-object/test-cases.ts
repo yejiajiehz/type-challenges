@@ -1,5 +1,13 @@
 import { Equal, Expect } from "../../utils";
 
+type AppendToObject<T, K extends string, V> = {
+  [key in K | keyof T]: key extends K
+    ? V
+    : key extends keyof T
+    ? T[key]
+    : never;
+};
+
 type test1 = {
   key: "cat";
   value: "green";

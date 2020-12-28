@@ -1,5 +1,11 @@
 import { Equal, Expect } from "../../utils";
 
+type MyReturnType<Fn extends (...args: any[]) => any> = Fn extends (
+  ...args: any[]
+) => infer R
+  ? R
+  : never;
+
 type cases = [
   Expect<Equal<string, MyReturnType<() => string>>>,
   Expect<Equal<123, MyReturnType<() => 123>>>,

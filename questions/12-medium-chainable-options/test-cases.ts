@@ -1,5 +1,13 @@
 import { Alike, Expect } from "../../utils";
 
+type Chainable<T = {}> = {
+  option: <K extends string, V>(
+    key: K,
+    value: V
+  ) => Chainable<T & { [key in K]: V }>;
+  get: () => T;
+};
+
 declare const a: Chainable;
 
 const result = a

@@ -1,5 +1,12 @@
 import { Alike, Expect } from "../../utils";
 
+type MyReadonly2<T, K extends keyof T = keyof T> = {
+  readonly [key in K]: T[key];
+} &
+  { [key in Exclude<keyof T, K>]: T[key] };
+
+type x = MyReadonly2<Todo1, "title" | "description">;
+
 type cases = [
   Expect<Alike<MyReadonly2<Todo1>, Readonly<Todo1>>>,
   Expect<Alike<MyReadonly2<Todo1, "title" | "description">, Expected>>,

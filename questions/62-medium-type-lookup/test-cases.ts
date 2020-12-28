@@ -1,5 +1,7 @@
 import { Equal, Expect } from "../../utils";
 
+type LookUp<T, K> = T extends { type: K } ? T : never;
+
 interface Cat {
   type: "cat";
   breeds: "Abyssinian" | "Shorthair" | "Curl" | "Bengal";

@@ -1,5 +1,9 @@
 import { Equal, Expect } from "../../utils";
 
+type StrintToUnion<T extends string> = T extends `${infer R1}${infer R2}`
+  ? R1 | StrintToUnion<R2>
+  : never;
+
 type cases = [
   Expect<Equal<StrintToUnion<"">, never>>,
   Expect<Equal<StrintToUnion<"t">, "t">>,
