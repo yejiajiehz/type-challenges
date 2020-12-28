@@ -1,0 +1,6 @@
+{
+  "name": "type-challenges",
+  "scripts": {
+    "test": "tsc"
+  }
+}
