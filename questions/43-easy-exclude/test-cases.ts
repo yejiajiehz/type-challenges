@@ -1,5 +1,7 @@
 import { Equal, Expect, ExpectFalse, NotEqual } from "../../utils";
 
+type MyExclude<T, K> = T extends K ? never : T;
+
 type cases = [
   Expect<Equal<MyExclude<"a" | "b" | "c", "a">, Exclude<"a" | "b" | "c", "a">>>,
   Expect<
