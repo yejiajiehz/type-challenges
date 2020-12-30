@@ -1,5 +1,30 @@
 import { Equal, Expect, ExpectFalse, NotEqual } from "../../utils";
 
+type Enum1<T extends readonly any[], V extends string = T[number]> = {
+  readonly [key in `${Capitalize<T[number]>}`]: V extends any
+    ? `${Capitalize<V>}` extends key
+      ? V
+      : never
+    : never;
+};
+
+type GetIndex<T, K, V extends any[] = []> = T extends readonly [
+  infer R1,
+  ...infer R2
+]
+  ? R1 extends K
+    ? V["length"]
+    : GetIndex<R2, K, [R1, ...V]>
+  : never;
+
+type Enum2<T extends readonly any[], K = Enum1<T>> = {
+  [key in keyof K]: GetIndex<T, K[key]>;
+};
+
+type Enum<T extends readonly any[], K extends boolean = false> = K extends false
+  ? Enum1<T>
+  : Enum2<T>;
+
 const OperatingSystem = ["macOS", "Windows", "Linux"] as const;
 const Command = [
   "echo",

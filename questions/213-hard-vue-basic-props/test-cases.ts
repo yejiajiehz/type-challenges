@@ -1,5 +1,40 @@
 import { Equal, Expect, IsAny, Debug } from "../../utils";
 
+type ConstructToType<T> = T extends new (...args: any) => any
+  ? ConstructToType<InstanceType<T>>
+  : T extends String
+  ? string
+  : T extends Number
+  ? number
+  : T extends Boolean
+  ? boolean
+  : T;
+
+type TupleToUnion<T> = T extends any[] ? T[number] : T;
+
+type GetType<T> = T extends { type: infer R } ? R : T;
+
+type PropType<T> = {
+  [key in keyof T]: {} extends T[key]
+    ? any
+    : ConstructToType<TupleToUnion<GetType<T[key]>>>;
+};
+
+type Computed<T> = {
+  [key in keyof T]: T[key] extends (...args: any) => any
+    ? ReturnType<T[key]>
+    : T[key];
+};
+
+declare function VueBasicProps<P, D, C, M>(
+  options: {
+    props: P;
+    data: (this: PropType<P>) => D;
+    computed?: C & ThisType<PropType<P> & D>;
+    methods?: M & ThisType<PropType<P> & D & Computed<C> & M>;
+  } & ThisType<null>
+): any;
+
 class ClassA {}
 
 VueBasicProps({
@@ -45,8 +80,8 @@ VueBasicProps({
       return Math.random();
     },
     hi() {
-      alert(this.fullname.toLowerCase());
-      alert(this.getRandom());
+      this.fullname.toLowerCase();
+      this.getRandom();
     },
     test() {
       const fullname = this.fullname;

@@ -1,5 +1,19 @@
 import { Equal, Expect } from "../../utils";
 
+type Computed<T> = {
+  [key in keyof T]: T[key] extends (...args: any) => any
+    ? ReturnType<T[key]>
+    : T[key];
+};
+
+export declare function SimpleVue<D, C, M>(
+  options: {
+    data: () => D;
+    computed?: C & ThisType<D>;
+    methods?: M & ThisType<D & Computed<C> & M>;
+  } & ThisType<null>
+): any;
+
 SimpleVue({
   data() {
     // @ts-expect-error
@@ -25,8 +39,8 @@ SimpleVue({
       return Math.random();
     },
     hi() {
-      alert(this.fullname.toLowerCase());
-      alert(this.getRandom());
+      this.fullname.toLowerCase();
+      this.getRandom();
     },
     test() {
       const fullname = this.fullname;

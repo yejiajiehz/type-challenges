@@ -1,5 +1,11 @@
 import { Equal, Expect, ExpectFalse, NotEqual } from "../../utils";
 
+type FilterOut<T, K> = T extends [infer A1, ...infer A2]
+  ? [A1] extends [K]
+    ? FilterOut<A2, K>
+    : [A1, ...FilterOut<A2, K>]
+  : T;
+
 type cases = [
   Expect<Equal<FilterOut<[], never>, []>>,
   Expect<Equal<FilterOut<[never], never>, []>>,
