@@ -1,6 +1,5 @@
 import { Equal, IsTrue, IsFalse } from "../../utils";
 
-// TODO:
 type DeepObjectToUniq<T> = T;
 
 type Quz = { quz: 4 };

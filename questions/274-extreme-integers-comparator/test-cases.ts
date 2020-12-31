@@ -1,5 +1,54 @@
 import { Equal, Expect } from "../../utils";
 
+enum Comparison {
+  Greater,
+  Equal,
+  Lower,
+}
+
+// XXX: 递归的深度，更高效的模式应该时按位对比
+type NumberToArray<
+  T extends number | string,
+  Arr extends any[] = []
+> = `${Arr["length"]}` extends `${T}` ? Arr : NumberToArray<T, [1, ...Arr]>;
+
+type CompareArr<A extends any[], B extends any[]> = A extends [...B, ...infer _]
+  ? B extends [...A, ...infer _]
+    ? Comparison.Equal
+    : Comparison.Greater
+  : Comparison.Lower;
+
+type PositiveCompare<A extends number, B extends number> = CompareArr<
+  NumberToArray<A>,
+  NumberToArray<B>
+>;
+
+type Absolute<T extends number> = `${T}` extends `-${infer R}` ? R : `${T}`;
+
+type NegativeCompare<A extends number, B extends number> = CompareArr<
+  NumberToArray<Absolute<B>>,
+  NumberToArray<Absolute<A>>
+>;
+
+type IsZero<T> = T extends 0 ? true : false;
+type IsNegative<T extends number> = `${T}` extends `-${infer _}` ? true : false;
+
+type Comparator<A extends number, B extends number> = IsZero<A> extends true
+  ? IsZero<B> extends true
+    ? Comparison.Equal
+    : IsNegative<B> extends true
+    ? Comparison.Greater
+    : Comparison.Lower
+  : IsNegative<A> extends true
+  ? IsNegative<B> extends true
+    ? NegativeCompare<A, B>
+    : Comparison.Lower
+  : IsNegative<B> extends true
+  ? Comparison.Greater
+  : IsZero<B> extends true
+  ? Comparison.Greater
+  : PositiveCompare<A, B>;
+
 type cases = [
   Expect<Equal<Comparator<5, 5>, Comparison.Equal>>,
   Expect<Equal<Comparator<5, 6>, Comparison.Lower>>,

@@ -1,6 +1,6 @@
 import { Equal, Expect } from "../../utils";
 
-type ToNumber<
+export type ToNumber<
   T extends string,
   V extends any[] = []
 > = T extends `${V["length"]}` ? V["length"] : ToNumber<T, [any, ...V]>;
