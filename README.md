@@ -1,2 +1,36 @@
 # type-challenges
 https://github.com/type-challenges/type-challenges
+
+
+## 惯用法
+1. union 类型 extends 是分别执行
+```ts
+type A = 'A' | 'B' | 'C'
+type B = A extends A ? `${A}1` : never
+//  B = 'A1' | 'B1' | 'C1'
+```
+
+2. 空判断
+```ts
+type EmptyArray<T> = T extends [] ? true : false
+type IsNever<T> = [never] extends [never] ? true : false
+type EmptyObject<T> = {} extends T ? true : false
+type isUnknown<T> = unknown extends T ? true : false
+```
+
+3. 通过条件判断 `type X<T> = T extends U ? X<T> : Y` 递归推导
+
+## 工具库
+- infer 推导
+```ts
+// 解压
+type Prop<T> = T | { type?: T };
+type InferProp<T> = T extends Prop<infer R> ? R: never;
+```
+- ...数组
+- 字符串模板。包括 Capitalize 等方法
+- ThisType
+
+## 坑
+- `T extends [...infer Rest, infer Last]` 当 `T` 为 `[]` 时，`Rest` 为 `unknown[]`
+判断 `unknown[]`: `unknown extends T[0]`
